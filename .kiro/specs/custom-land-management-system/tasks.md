@@ -35,6 +35,8 @@
   - Create LandPlot model with id, plotNumber, location, size, status, ownerName fields
   - Define status enum with AVAILABLE, SOLD, DISPUTED, RESERVED values
   - Add unique constraint on plotNumber and validation rules
+
+
   - Write unit tests for LandPlot model validation and status updates
 
 
@@ -44,20 +46,27 @@
   - Create Transaction model with buyer/seller details, pricing, and commission fields
   - Define foreign key relationships to User and LandPlot models
 
+
   - Add automatic commission calculation in model hooks
   - Write unit tests for Transaction model and commission calculation
   - _Requirements: 3.1, 3.2, 3.4_
 
-- [ ] 4. Implement authentication system
+- [x] 4. Implement authentication system
+
+
 - [ ] 4.1 Create authentication service with password hashing
   - Implement user registration with bcrypt password hashing
   - Create login service with credential validation and JWT token generation
   - Add password validation and security measures
+
+
   - Write unit tests for authentication service functions
   - _Requirements: 1.1, 1.2_
 
 - [ ] 4.2 Implement JWT middleware for route protection
   - Create JWT verification middleware for protected routes
+
+
   - Implement role-based access control middleware
   - Add token expiration handling and error responses
   - Write unit tests for authentication middleware
@@ -70,15 +79,19 @@
   - Write integration tests for authentication endpoints
   - _Requirements: 1.1, 1.2, 1.4_
 
-- [ ] 5. Implement land management functionality
-- [ ] 5.1 Create land service with CRUD operations
+- [x] 5. Implement land management functionality
+
+
+- [x] 5.1 Create land service with CRUD operations
+
   - Implement land plot creation with validation and duplicate checking
   - Create land plot listing with filtering and pagination
   - Add land plot update functionality with status management
   - Write unit tests for land service operations
   - _Requirements: 2.1, 2.2, 2.3_
 
-- [ ] 5.2 Implement land controller with API endpoints
+- [x] 5.2 Implement land controller with API endpoints
+
   - Create POST /lands endpoint for adding new land plots
   - Implement GET /lands endpoint with query parameters and filtering
   - Add PUT /lands/:id endpoint for updating land plot details
