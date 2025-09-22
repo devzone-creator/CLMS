@@ -306,5 +306,3 @@ For technical support or questions:
 - Examine the service layer for business logic implementation
 
 ---
-
-**Built with ❤️ for Gbewaa Palace Land Management**
