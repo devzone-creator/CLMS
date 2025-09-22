@@ -296,7 +296,7 @@ The system uses SQLite for simplicity and portability:
 
 ## 📄 License
 
-This project is proprietary software for Gbewaa Palace.
+This project is proprietary software for Custom Land Commision.
 
 ## 🆘 Support
 
