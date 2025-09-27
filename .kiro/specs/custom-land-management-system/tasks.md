@@ -20,7 +20,10 @@
 
 
 - [ ] 3. Create core data models with Sequelize
-- [ ] 3.1 Implement User model with authentication fields
+- [x] 3.1 Implement User model with authentication fields
+
+
+
   - Create User model with id, email, password, role, firstName, lastName fields
   - Define role enum with ADMIN, STAFF, AUDITOR values
 
@@ -99,14 +102,24 @@
   - _Requirements: 2.1, 2.2, 2.3_
 
 - [ ] 6. Implement transaction management system
-- [ ] 6.1 Create transaction service with business logic
+- [x] 6.1 Create transaction service with business logic
+
+
+
   - Implement transaction recording with automatic commission calculation
   - Add land plot status update when transaction is recorded
   - Create transaction listing and filtering functionality
   - Write unit tests for transaction service and commission logic
   - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-- [ ] 6.2 Implement transaction controller and routes
+
+
+- [x] 6.2 Implement transaction controller and routes
+
+
+
+
+
   - Create POST /transactions endpoint for recording new sales
   - Implement GET /transactions endpoint with filtering capabilities
   - Add GET /transactions/:id endpoint for individual transaction details
