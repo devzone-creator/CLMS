@@ -297,6 +297,153 @@ class TransactionController {
             });
         }
     }
+
+    /**
+     * Download PDF receipt for transaction
+     * GET /transactions/:id/receipt
+     */
+    static async downloadReceipt(req, res) {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                return res.status(400).json({
+                    success: false,
+                    error: {
+                        code: 'VALIDATION_ERROR',
+                        message: 'Transaction ID is required'
+                    }
+                });
+            }
+
+            // Get or generate receipt path
+            let receiptPath = await TransactionService.getReceiptPath(id);
+            
+            if (!receiptPath) {
+                // Generate receipt if it doesn't exist
+                receiptPath = await TransactionService.generateReceiptForTransaction(id);
+            }
+
+            // Check if file exists
+            const fs = await import('fs');
+            if (!fs.default.existsSync(receiptPath)) {
+                return res.status(404).json({
+                    success: false,
+                    error: {
+                        code: 'RECEIPT_NOT_FOUND',
+                        message: 'Receipt file not found'
+                    }
+                });
+            }
+
+            // Set headers for PDF download
+            const path = await import('path');
+            const filename = path.default.basename(receiptPath);
+            
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+            res.setHeader('Cache-Control', 'no-cache');
+
+            // Stream the PDF file
+            const fileStream = fs.default.createReadStream(receiptPath);
+            fileStream.pipe(res);
+
+            fileStream.on('error', (error) => {
+                console.error('Error streaming PDF:', error);
+                if (!res.headersSent) {
+                    res.status(500).json({
+                        success: false,
+                        error: {
+                            code: 'FILE_STREAM_ERROR',
+                            message: 'Failed to stream PDF file'
+                        }
+                    });
+                }
+            });
+
+        } catch (error) {
+            console.error('Error downloading receipt:', error);
+            
+            if (error.message === 'Transaction not found') {
+                return res.status(404).json({
+                    success: false,
+                    error: {
+                        code: 'NOT_FOUND',
+                        message: 'Transaction not found'
+                    }
+                });
+            }
+
+            if (error.message.includes('Failed to generate receipt')) {
+                return res.status(500).json({
+                    success: false,
+                    error: {
+                        code: 'RECEIPT_GENERATION_ERROR',
+                        message: 'Failed to generate receipt'
+                    }
+                });
+            }
+
+            res.status(500).json({
+                success: false,
+                error: {
+                    code: 'INTERNAL_SERVER_ERROR',
+                    message: 'Failed to download receipt'
+                }
+            });
+        }
+    }
+
+    /**
+     * Regenerate PDF receipt for transaction
+     * POST /transactions/:id/regenerate-receipt
+     */
+    static async regenerateReceipt(req, res) {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                return res.status(400).json({
+                    success: false,
+                    error: {
+                        code: 'VALIDATION_ERROR',
+                        message: 'Transaction ID is required'
+                    }
+                });
+            }
+
+            const receiptPath = await TransactionService.regenerateReceipt(id);
+
+            res.status(200).json({
+                success: true,
+                data: {
+                    receiptPath,
+                    message: 'Receipt regenerated successfully'
+                }
+            });
+
+        } catch (error) {
+            console.error('Error regenerating receipt:', error);
+            
+            if (error.message === 'Transaction not found') {
+                return res.status(404).json({
+                    success: false,
+                    error: {
+                        code: 'NOT_FOUND',
+                        message: 'Transaction not found'
+                    }
+                });
+            }
+
+            res.status(500).json({
+                success: false,
+                error: {
+                    code: 'INTERNAL_SERVER_ERROR',
+                    message: 'Failed to regenerate receipt'
+                }
+            });
+        }
+    }
 }
 
 export default TransactionController;

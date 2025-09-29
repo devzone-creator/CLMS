@@ -1,5 +1,6 @@
 import { Transaction, LandPlot, User } from '../models/index.js';
 import LandService from './landService.js';
+import PDFGenerator from '../utils/pdfGenerator.js';
 import { Op } from 'sequelize';
 
 class TransactionService {
@@ -74,6 +75,20 @@ class TransactionService {
           }
         ]
       });
+
+      // Generate PDF receipt automatically
+      try {
+        const receiptPath = await PDFGenerator.generateReceipt(transactionWithDetails);
+        
+        // Update transaction with receipt path
+        await transaction.update({ receiptPath });
+        transactionWithDetails.receiptPath = receiptPath;
+        
+        console.log(`PDF receipt generated for transaction ${transaction.id}: ${receiptPath}`);
+      } catch (pdfError) {
+        console.error(`Failed to generate PDF receipt for transaction ${transaction.id}:`, pdfError.message);
+        // Don't fail the transaction if PDF generation fails
+      }
 
       return transactionWithDetails;
 
@@ -430,6 +445,102 @@ class TransactionService {
 
     } catch (error) {
       throw error;
+    }
+  }
+
+  /**
+   * Generate PDF receipt for existing transaction
+   * @param {string} transactionId - Transaction ID
+   * @returns {string} Path to generated PDF receipt
+   */
+  static async generateReceiptForTransaction(transactionId) {
+    try {
+      const transaction = await this.getTransactionById(transactionId);
+      
+      // Check if receipt already exists
+      const existingReceipt = PDFGenerator.findExistingReceipt(transactionId);
+      if (existingReceipt) {
+        return existingReceipt;
+      }
+
+      // Generate new receipt
+      const receiptPath = await PDFGenerator.generateReceipt(transaction);
+      
+      // Update transaction with receipt path
+      await Transaction.update(
+        { receiptPath },
+        { where: { id: transactionId } }
+      );
+
+      return receiptPath;
+
+    } catch (error) {
+      throw new Error(`Failed to generate receipt: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get PDF receipt path for transaction
+   * @param {string} transactionId - Transaction ID
+   * @returns {string|null} Path to PDF receipt or null if not found
+   */
+  static async getReceiptPath(transactionId) {
+    try {
+      const transaction = await Transaction.findByPk(transactionId, {
+        attributes: ['id', 'receiptPath']
+      });
+
+      if (!transaction) {
+        throw new Error('Transaction not found');
+      }
+
+      // Check if receipt path exists in database
+      if (transaction.receiptPath) {
+        return transaction.receiptPath;
+      }
+
+      // Check if receipt exists in file system
+      const existingReceipt = PDFGenerator.findExistingReceipt(transactionId);
+      if (existingReceipt) {
+        // Update database with found receipt path
+        await transaction.update({ receiptPath: existingReceipt });
+        return existingReceipt;
+      }
+
+      return null;
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Regenerate PDF receipt for transaction
+   * @param {string} transactionId - Transaction ID
+   * @returns {string} Path to regenerated PDF receipt
+   */
+  static async regenerateReceipt(transactionId) {
+    try {
+      const transaction = await this.getTransactionById(transactionId);
+      
+      // Delete existing receipt if it exists
+      if (transaction.receiptPath) {
+        PDFGenerator.deleteReceipt(transaction.receiptPath);
+      }
+
+      // Generate new receipt
+      const receiptPath = await PDFGenerator.generateReceipt(transaction);
+      
+      // Update transaction with new receipt path
+      await Transaction.update(
+        { receiptPath },
+        { where: { id: transactionId } }
+      );
+
+      return receiptPath;
+
+    } catch (error) {
+      throw new Error(`Failed to regenerate receipt: ${error.message}`);
     }
   }
 }

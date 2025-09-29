@@ -10,6 +10,7 @@ import { testConnection, syncDatabase } from './config/db.js';
 import authRoutes from './routes/auth.js';
 import landRoutes from './routes/lands.js';
 import transactionRoutes from './routes/transactions.js';
+import reportsRoutes from './routes/reports.js';
 
 // Load environment variables
 dotenv.config();
@@ -41,6 +42,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/lands', landRoutes);
 app.use('/api/transactions', transactionRoutes);
+app.use('/api/reports', reportsRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -52,7 +54,8 @@ app.get('/', (req, res) => {
       health: '/health',
       auth: '/api/auth',
       lands: '/api/lands',
-      transactions: '/api/transactions'
+      transactions: '/api/transactions',
+      reports: '/api/reports'
     },
     documentation: 'See README.md for API documentation'
   });
@@ -132,6 +135,9 @@ async function startServer() {
       console.log(`   GET  /api/transactions    - List transactions`);
       console.log(`   POST /api/transactions    - Record transaction`);
       console.log(`   GET  /api/transactions/stats - Transaction statistics`);
+      console.log(`   GET  /api/reports/summary - Business summary report`);
+      console.log(`   GET  /api/reports/transactions - Transaction reports`);
+      console.log(`   GET  /api/reports/disputed-plots - Disputed plots report`);
       console.log('\n🔐 Authentication required for most endpoints');
       console.log('📖 See README.md for complete API documentation\n');
     });

@@ -45,7 +45,8 @@
 
   - _Requirements: 2.1, 2.2, 2.3, 2.5_
 
-- [ ] 3.3 Implement Transaction model with relationships
+- [x] 3.3 Implement Transaction model with relationships
+
   - Create Transaction model with buyer/seller details, pricing, and commission fields
   - Define foreign key relationships to User and LandPlot models
 
@@ -57,6 +58,8 @@
 - [x] 4. Implement authentication system
 
 
+
+
 - [ ] 4.1 Create authentication service with password hashing
   - Implement user registration with bcrypt password hashing
   - Create login service with credential validation and JWT token generation
@@ -64,6 +67,8 @@
 
 
   - Write unit tests for authentication service functions
+
+
   - _Requirements: 1.1, 1.2_
 
 - [ ] 4.2 Implement JWT middleware for route protection
@@ -71,6 +76,8 @@
 
 
   - Implement role-based access control middleware
+
+
   - Add token expiration handling and error responses
   - Write unit tests for authentication middleware
   - _Requirements: 1.3, 1.4, 1.5, 1.6_
@@ -120,15 +127,26 @@
 
 
 
+
+
+
+
+
+
+
   - Create POST /transactions endpoint for recording new sales
   - Implement GET /transactions endpoint with filtering capabilities
   - Add GET /transactions/:id endpoint for individual transaction details
   - Write integration tests for transaction endpoints
   - _Requirements: 3.1, 3.4_
 
+
+
+
 - [ ] 7. Implement PDF receipt generation
 - [ ] 7.1 Create PDF generation utility with PDFKit
   - Implement PDF receipt template with Gbewaa Palace branding
+
   - Add transaction details formatting (buyer, seller, plot, price, commission)
   - Create file storage and retrieval system for generated receipts
   - Write unit tests for PDF generation functionality
@@ -149,7 +167,10 @@
   - Write unit tests for report calculations and data aggregation
   - _Requirements: 4.1, 4.2_
 
-- [ ] 8.2 Implement reports controller and endpoints
+- [x] 8.2 Implement reports controller and endpoints
+
+
+
   - Create GET /reports/summary endpoint with business metrics
   - Add proper authorization checks for report access
   - Implement error handling and data validation for reports

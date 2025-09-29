@@ -26,6 +26,12 @@ router.post('/calculate-commission', TransactionController.calculateCommission);
 // GET /transactions - Get all transactions with filtering (ADMIN, STAFF, AUDITOR)
 router.get('/', TransactionController.getAllTransactions);
 
+// GET /transactions/:id/receipt - Download PDF receipt (ADMIN, STAFF)
+router.get('/:id/receipt', TransactionController.downloadReceipt);
+
+// POST /transactions/:id/regenerate-receipt - Regenerate PDF receipt (ADMIN, STAFF)
+router.post('/:id/regenerate-receipt', TransactionController.regenerateReceipt);
+
 // GET /transactions/:id - Get specific transaction (ADMIN, STAFF, AUDITOR)
 router.get('/:id', TransactionController.getTransactionById);
 
